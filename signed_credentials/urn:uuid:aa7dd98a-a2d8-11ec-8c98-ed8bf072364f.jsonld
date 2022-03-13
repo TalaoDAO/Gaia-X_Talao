@@ -1,0 +1,68 @@
+{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        {
+            "GaiaxPass": {
+                "@context": {
+                    "@protected": true,
+                    "@version": 1.1,
+                    "company_number": "schema:taxID",
+                    "headquarter": {
+                        "@context": {
+                            "@protected": true,
+                            "@version": 1.1,
+                            "country": "schema:addressCountry",
+                            "schema": "https://schema.org/"
+                        },
+                        "@id": "https://gaia-x.gitlab.io/policy-rules-committee/trust-framework/participant/"
+                    },
+                    "id": "@id",
+                    "legal": {
+                        "@context": {
+                            "@protected": true,
+                            "@version": 1.1,
+                            "country": "schema:addressCountry",
+                            "schema": "https://schema.org/"
+                        },
+                        "@id": "https://gaia-x.gitlab.io/policy-rules-committee/trust-framework/participant/"
+                    },
+                    "lei": "schema:leiCode",
+                    "parentOrganisation": "schema:parentOrganization",
+                    "schema": "https://schema.org/",
+                    "subOrganisation": "schema:subOrganization",
+                    "type": "@type"
+                },
+                "@id": "https://gaia-x.gitlab.io/policy-rules-committee/trust-framework/participant/"
+            }
+        }
+    ],
+    "id": "urn:uuid:aa7dd98a-a2d8-11ec-8c98-ed8bf072364f",
+    "type": [
+        "VerifiableCredential",
+        "GaiaxPass"
+    ],
+    "credentialSubject": {
+        "id": "did:tz:tz2VpoT62UtsmR2DbA2Xhx6xNKxqei2skXU3",
+        "type": "GaiaxPass",
+        "headquarter": {
+            "country": "FR"
+        },
+        "legal": {
+            "country": "FR"
+        },
+        "company_number": " FR7501.837674480"
+    },
+    "issuer": "did:web:talao.co",
+    "issuanceDate": "2022-03-13T14:19:59Z",
+    "proof": {
+        "@context": [
+            "https://w3id.org/security/suites/jws-2020/v1"
+        ],
+        "type": "JsonWebSignature2020",
+        "proofPurpose": "assertionMethod",
+        "verificationMethod": "did:web:talao.co#key-2",
+        "created": "2022-03-13T14:20:04.975Z",
+        "jws": "eyJhbGciOiJQUzI1NiIsImtpZCI6ImRpZDp3ZWI6dGFsYW8uY28ja2V5LTIiLCJjcml0IjpbImI2NCJdLCJiNjQiOmZhbHNlfQ..XTcSL_x26ZSbhHQCuadgidZ53isS3MNe9AZqwMy-rZYuSiAgieDigivOSYsF0anHgm7hNY2c1dcvk7nwJZU0OfCAYFCD46qtrs2mWJn-L-OOKQXDZd8H6jdeu3PUckggbt_ix5iso6LErrg30gravJoRdORxokNFgXAo3hWr8ahbScskspO-nbw9EbNu_8EdfdP2nkN0COURnswJP9f61CkrVgTwoEdE6Gsc4GgewqjpbrpV81pi2lTSKoiybUFQZROdQ2qRF57diHOhEKYHk33-YHcShw3d5hvwZjPkMjXzC5Q9gY3_qvAWmLUSN1yvyhhvUySgSYVZGvN3OTvMBA"
+    },
+    "expirationDate": "2023-03-13T15:19:59.864444Z"
+}
