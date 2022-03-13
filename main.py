@@ -2,7 +2,7 @@
 Python 3.9 
 didkit 0.3.0 get_version
 """
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_qrcode import QRcode
 import didkit
 import redis
@@ -38,7 +38,7 @@ print("didkit version = ", didkit.get_version())
 
 @app.route('/gaiax' , methods=['GET']) 
 def test() :
-   return jsonify("Bonjour")
+   return render_template("gaiax.html")
 
 # MAIN entry point. Flask http server
 if __name__ == '__main__':

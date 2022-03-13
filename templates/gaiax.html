@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- gaiax.html -->
+<html>
+
+<head>
+    {% include 'head.html' %}
+</head>
+
+<body id="page-top" >
+    <div id="wrapper">
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content" >
+                {% include 'gaiax_nav_bar.html' %}
+                <div class="container-fluid mt-5">
+                    <div class="text-center">
+                    1 - Download the Talao smartphone wallet from the Google or Apple store <br>
+                    2 - Setup your wallet as an enterprise wallet with the key provided by your company<br>
+                    3 - Start your journey
+                    </div>
+                    <div class="row my-5">
+            
+                        <div class="col mt-4">
+                            <div id="id_qrcode" class="text-center">
+                                <a href="/gaiax/pass"><img  src="/static/img/image_9.png"  style="width: 350px;border-radius:0px;"></a>
+                                <br><strong>Get a Gaia-X Pass</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="col mt-4">
+                            <div id="id_qrcode" class="text-center">
+                                <a href="/gaiax/login"><img  src="/static/img/12.png"  style="width: 300px;border-radius:0px;"></a>
+                                <br><strong>Sign-In to the Gaia-X Talao portal</strong>
+                            </div>
+                        </div>
+                       
+                        
+                        <div class="col mt-4">
+                            <div id="id_qrcode" class="text-center">
+                                <a href="/wallet/test/presentationRequest"><img  src="/static/img/20.jpeg"  style="width: 350px;border-radius:0px;"></a>
+                                <br><strong>Display your credential</strong>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row my-5">
+                        
+                      
+                       
+                       
+                    </div>
+                    
+                   
+
+                </div>
+            </div>
+        </div>
+    </div>
+                                {% include 'footer.html' %}
+
+    <script src="{{ url_for('static', filename='jquery-3.5.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bs-init.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+    <script>
+        function goBack() {
+          window.history.back();
+        }
+    </script>
+
+</body>
+
+</html>
