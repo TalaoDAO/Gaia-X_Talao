@@ -23,26 +23,24 @@
                 </div>
                     {% endfor %}
                 {% endif %}
-            {% endwith %}
+                {% endwith %}
             
                        {% include 'gaiax_nav_bar.html' %}
 
-
-                        <div class="container mt-5 d-none d-sm-block" >
+                        <div id="content_desktop"  class="container mt-5 d-none d-sm-block" >
                             <div class="row  justify-content-center ">
                                 <div class="m-3">
                                     <center>
-                                        <div>  
                                             <h2>Sign-In to the Gaia-X Talao portal </h2>
                                             <h4>Scan the QR Code bellow with your smartphone wallet or copy the request to your desktop wallet.</h4> 
-                                            <h6>You will be asked to present a Gaia-X Pass, if you do not have one in your wallet you will be redirected to the onboarding service.</h6>
-                                            <br>  
-                                            <div><img src="{{ qrcode(url)}}"  width="300" ></div>
-                                        </div><br><br>
-                                        Request<br>
-                                        <textarea cols="100" rows="15">{{url}}</textarea>
-                                        <br><br>
-                                        <br>
+                                            <h6>You will be asked to present a Gaia-X Pass signed by Talao. If you do not have one in your wallet you will be redirected to the onboarding service.</h6>
+                                            <div class="my-4">
+                                                <img src="{{ qrcode(url)}}"  width="300" >
+                                            </div>
+                                            <div class="my-2">
+                                                Request
+                                            </div>
+                                            <textarea cols="100" rows="20">{{url}}</textarea>
                                     </center>
                                 </div>
                             </div>
@@ -55,7 +53,7 @@
           <div class="card-body">
               <div class="text-center">
                   <p class="card-text">
-                    <br>Gaia-X Talao login portal<br>
+                    <br>Gaia-X Talao portal<br>
                   </p>
                   <a href="{{deeplink}}" class="btn btn-primary">Sign-In</a>
               </div>
