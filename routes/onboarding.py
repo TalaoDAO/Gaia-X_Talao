@@ -53,7 +53,7 @@ def gaiax_pass() :
         session['email'] = request.form['email']
         session['code'] = str(secrets.randbelow(99999))
         session['code_exp'] = datetime.now() + timedelta(seconds= 300)
-        print('code time = ', session['code_time'])
+        print('code time = ', session['code_exp'])
         try : 
             # get smtp password
             passwords_file = open('passwords.json')
