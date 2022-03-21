@@ -147,7 +147,7 @@ async def gaiax_login_redirect(id, red) :
 
     error = str()
     error += await test_vp_token(vp_token, nonce)
-    error += test_id_token(id_token, nonce)
+    error += await test_id_token(id_token, nonce)
     if error :    
         event_data = json.dumps({"id" : id,
                                 "check" : "ko",
@@ -161,19 +161,22 @@ async def gaiax_login_redirect(id, red) :
                          "check" : "success",
                          })   
     red.publish('gaiax_login', event_data)
-    return jsonify("Ciongrats ! Everything is ok"), 200
+    return jsonify("Congrats ! Everything is ok"), 200
 
 
 async def test_vp_token(vp_token, nonce) :
+    vc = json.loads(vp_token).get('verifiableCredential')
+    vc_result = await didkit.verify_credential(json.dumps(vc), '{}')
+    error = "VC signature check = " + vc_result + "<br>"
+    #vp = json.loads(vp_token)
     didkit_options = {
             "proofPurpose": "authentication",
-            "verificationMethod": "did:web:ecole42.talao.co#key-1",
-            "challenge" : nonce
+            "verificationMethod": "did:web:demo.talao.co#key-1"
     }
-    error = str()
     result = await didkit.verify_presentation(vp_token, json.dumps(didkit_options))
-    if json.loads(result)['errors'] :
-        error += "VP signature error , didkit result = " + result + "<br>"
+
+    #result = await didkit.verify_presentation(vp_token, '{}')
+    error += "VP signature check  = " + result + "<br>"
     if json.loads(vp_token)['verifiableCredential']['credentialSubject']['type'] != "GaiaxPass" :
         error += "VC type error <br>"
     if json.loads(vp_token)['proof']['challenge'] != nonce :
@@ -186,7 +189,7 @@ async def test_vp_token(vp_token, nonce) :
 async def test_id_token(id_token, nonce) :
     id_token_kid = jwt.get_unverified_header(id_token)['kid']
     id_token_did = id_token_kid.split('#')[0] 
-    did_document = json.loads(await didkit.resolveDid(id_token_did, '{}'))['didDocument']
+    did_document = json.loads(await didkit.resolve_did(id_token_did, '{}')) #['didDocument']
     # extract public key JWK
     public_key = str()
     error = str()
