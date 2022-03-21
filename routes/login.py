@@ -165,25 +165,25 @@ async def gaiax_login_redirect(id, red) :
 
 
 async def test_vp_token(vp_token, nonce) :
-    vc = json.loads(vp_token).get('verifiableCredential')
+    vp = json.loads(vp_token)
+    holder = vp['holder']
+    vc = vp.get('verifiableCredential')
     vc_result = await didkit.verify_credential(json.dumps(vc), '{}')
-    error = "VC signature check = " + vc_result + "<br>"
-    #vp = json.loads(vp_token)
+    log = "VC signature check = " + vc_result + "<br>"
     didkit_options = {
             "proofPurpose": "authentication",
             "verificationMethod": "did:web:demo.talao.co#key-1"
     }
     result = await didkit.verify_presentation(vp_token, json.dumps(didkit_options))
-
-    #result = await didkit.verify_presentation(vp_token, '{}')
-    error += "VP signature check  = " + result + "<br>"
-    if json.loads(vp_token)['verifiableCredential']['credentialSubject']['type'] != "GaiaxPass" :
-        error += "VC type error <br>"
+    log += "VP signature check  = " + result + "<br>"
+    VC_type =  json.loads(vp_token)['verifiableCredential']['credentialSubject']['type']
+    log += "VC type = "+ VC_type + "<br>"
     if json.loads(vp_token)['proof']['challenge'] != nonce :
-        error += "Different nonce/challenge in VC <br>"
-    if json.loads(vp_token)['verifiableCredential']['issuer'] != "did:web:talao.co" :
-        error += "VC issuer error <br>"
-    return error
+        log += "Different nonce/challenge in VC <br>"
+    issuer = json.loads(vp_token)['verifiableCredential']['issuer'] 
+    log += "VC issuer = " + issuer + "<br>"
+    log += "VP holder = " + holder + "<br>"
+    return log
 
 
 async def test_id_token(id_token, nonce) :
@@ -227,7 +227,7 @@ def login_followup(red) :
             <body>
             <center>  
                 <h1> Talao gaiax login</h1>
-                <h2>Problems occured</h2>
+                <h2>Here is the log</h2>
                 <h4> {{message|safe}} </h4>
                  <form   action="/gaiax/login" method="GET">
                 <br><br>
