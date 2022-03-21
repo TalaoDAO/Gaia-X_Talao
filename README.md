@@ -44,15 +44,17 @@ This repository includes :
 3. VC models for the Gaia-X Pass and the LinkedDomain
 
 
-## Implementation of a company identity ith the did:web method
+## Implementation of a company identity with did:web and a QWAC certificate
 
 Create the did:web identity and initialize a company wallet:
 
-1. Obtain a QWAC type certificate from a qualified supplier and install this certificate on the company's server. For the tests we will use a standard and free SSL certificate (Let's encrypt,...).  
+1. Obtain a QWAC type certificate from a Certificate Authority and install this certificate on the company's server. For the tests we will use a standard and free SSL certificate (Let's encrypt,...).  
 2. For Gaia-X, generate at least one RSA key in JWK format. This key will be used for signing VCs. If you want to use the Talao wallet with other ecosystems, you can generate keys in secp256k&, P-256 or Ed25519 format and install them as well. Do not forget to indicate the value of the “kid” which must be that of the verification method used for the signature of the VCs. An example private key in JWK format is available here.  
 3. Create a did.json file which will be installed under the root of the path server (example “my_server.com/.well-known/did.json”). This file is the DID Document of the identity of the company. See reference https://w3c-ccg.github.io/did-method-web/ 
 Be careful to publish only public keys in this document. The Talao wallet supports keys in JWK format (publicKeyJwk).  
 4. Add the “LinkedDomains” service in the DID Document (did.json file) :
+
+``` json
 
 "service": [
   {
@@ -62,17 +64,20 @@ Be careful to publish only public keys in this document. The Talao wallet suppor
       "origins": [
         "https://www.contoso.com/"    ]}}}
 
+```
 
 5. Test with the Universal Resolver https://dev.uniresolver.io/ that the DID Document is correctly installed and written.
 6. Create and sign a VC (self signed) that proves that you have the private key that you will use to sign the VCs. An example of this VC is available at: https://identity.foundation/.well-known/resources/did-configuration/#linked-data-proof-format . This file must then be installed on the root with a path '/.well-known/did-configuration.json'
 7. Install the Talao wallet on your smartphone andinitialize the wallet by downloading the private key (in JWK format). 
 
 
-## Initilize the Talao wallet as an enterprise wallet
+## Initialize the Talao wallet as an enterprise wallet
 
-To set up the wallet, choose "Create Enterprise Wallet" then enter the company DID (did:web:xxxx) and upload the Json Web Key file (JWK) with the correct "kid".  
+To set up the wallet as an enterprise wallet, choose "Create Enterprise Wallet" then enter your company DID (did:web:xxxx) and upload the Json Web Key file (JWK) with the correct "kid".  
 
 Example :
+
+``` json
 
 {
     "d": "BLn1w1y3xDp0a-8E97nk54e-FHZE8bNjqug........F-eDBw2mImBi9EI0F9Wj967iJ8Dd0HxQ",
@@ -87,7 +92,7 @@ Example :
     "qi": "gQ5rYsAmPivde03lz9-KdZ2Krad5zeP4NrMrHtjrVfhy..................9jpATbTtmGKcJUpBkHdoBcYbpcP87qNhvu9YRUcwEGoJHs02HWy7mG9maIxOAXwU3SoaU_A"
 }
 
-
+``` 
 
 ## Collect a Gaia-X Pass type VC
 
@@ -97,4 +102,94 @@ Go to https://talao.co/gaiax and choose "Get a Gaia-X Pass"
 ## Log in with your Pass
 
 Go to https://talao.co/gaiax and choose "Sign In to the Gaia-x Talao Portal" to simulate an authentication.
+
+## Check the content of your VC and VP
+
+Go to https://talao.co/gaiax and choose "Display your credential".
+
+## Example of a VC 
+
+NB : This one is signed by a did:web identity to a did:tez method. The status is not complete.
+
+``` json
+
+{
+    "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://w3id.org/vc-revocation-list-2020/v1",
+        {
+            "ParticipantCredential": {
+                "@context": {
+                    "@protected": true,
+                    "@version": 1.1,
+                    "companyName": "schema:legalName",
+                    "companyNumber": "schema:taxID",
+                    "headquarter": {
+                        "@context": {
+                            "@protected": true,
+                            "@version": 1.1,
+                            "country": "schema:addressCountry",
+                            "schema": "https://schema.org/"
+                        },
+                        "@id": "https://gaia-x.gitlab.io/policy-rules-committee/trust-framework/participant/"
+                    },
+                    "id": "@id",
+                    "legal": {
+                        "@context": {
+                            "@protected": true,
+                            "@version": 1.1,
+                            "country": "schema:addressCountry",
+                            "schema": "https://schema.org/"
+                        },
+                        "@id": "https://gaia-x.gitlab.io/policy-rules-committee/trust-framework/participant/"
+                    },
+                    "lei": "schema:leiCode",
+                    "parentOrganisation": "schema:parentOrganization",
+                    "schema": "https://schema.org/",
+                    "subOrganisation": "schema:subOrganization",
+                    "type": "@type"
+                },
+                "@id": "https://gaia-x.gitlab.io/policy-rules-committee/trust-framework/participant/"
+            }
+        }
+    ],
+    "id": "urn:uuid:f4d76267-9d0f-438c-9cf0-d3271a91a313",
+    "type": [
+        "VerifiableCredential",
+        "ParticipantCredential"
+    ],
+    "credentialSubject": {
+        "id": "did:tz:tz2E4kuaB9zHa1C3LqNeZncvZogYjQsXxvxz",
+        "type": "ParticipantCredential",
+        "companyName": "Talao SAS",
+        "companyNumber": " FR7501.837674480",
+        "legal": {
+            "country": "FR"
+        },
+        "headquarter": {
+            "country": "FR"
+        }
+    },
+    "issuer": "did:web:talao.co",
+    "issuanceDate": "2022-03-20T12:18:26Z",
+    "proof": {
+        "type": "Ed25519Signature2018",
+        "proofPurpose": "assertionMethod",
+        "verificationMethod": "did:web:talao.co#key-4",
+        "created": "2022-03-20T11:18:28.308Z",
+        "jws": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDp3ZWI6dGFsYW8uY28ja2V5LTQiLCJjcml0IjpbImI2NCJdLCJiNjQiOmZhbHNlfQ..Y_hh-xb3YxMfHs_QUOsf7foBnlnFQTqIWzltg0mIIJEyx32ZYtHzq36onQGEhDsU3YpKsoss_yFOKnBTggqeBQ"
+    },
+    "expirationDate": "2022-04-01T12:18:26Z",
+    "credentialStatus": {
+        "id": "https://.........../credential/status/1#1234",
+        "type": "RevocationList2020Status",
+        "revocationListCredential": "https://.......main/credential/status/1",
+        "revocationListIndex": "1234"
+    },
+    "credentialSchema": {
+        "id": "https://raw.githubusercontent.com/walt-id/waltid-ssikit-vclib/master/src/test/resources/schemas/ParticipantCredential.json",
+        "type": "JsonSchemaValidator2018"
+    }
+
+    ```
 
