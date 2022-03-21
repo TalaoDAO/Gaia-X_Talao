@@ -1,4 +1,4 @@
-﻿# Gaia-X - Talao
+# Gaia-X - Talao
 
 ## The Talao wallet
 
@@ -12,7 +12,7 @@ The other specificity of the Talao wallet is to be totally independent of the ec
 
 Talao has retained Spruce's Didkit library for signing and verifying VCs. This library is probably the most complete on the current market with support for a large number of DID methods and signature suites. This library has been tested with the DIF suite tests, it is also available in a large number of development languages ​​Nodejs, Python, C, Rust, PHP, Flutter/Dart, wasm. Other excellent libraries are also available in open source from the DIF in particular those produced by Mattr, DigitalBazar which are references in the SSI community.
 
-## The Gaia-X SSI implementation 
+## The Talao wallet as an Enterprise wallet for Gaia-X SSI implementation 
 
 The Gaia-X team has chosen the did:web method as well as the RSA keys for the support of the SSI identity and a predefined list of trusted sources. Currently, only company wallet support is provided, which fully justifies the choice of did:web. The choice of did:web is also an easy-to-implement solution requiring no DLT-type infrastructure while maintaining a Top-Down approach essential to public or semi-public ecosystems.
 
@@ -31,16 +31,17 @@ Talao's choices were:
 
 ## Repository content
 
+The Talao wallet repository is available there https://github.com/TalaoDAO/talao-wallet with installation code and procedure for an Android and IOS target 
 
-The Talao wallet repository: The Talao wallet installation code and procedure for an Android and IOS target. The wallet is also available for download on the Google and Apple stores (“Talao wallet”, build > 1.2.0)
+The wallet is also available for download on the Google and Apple stores (“Talao wallet”, build > 1.2.0)
 
-The Didkit repository: library for signing and verifying Verifiable Credentials
+The Didkit repository: library for signing and verifying Verifiable Credentialsn is available there : https://github.com/spruceid/didkit.
+
 The repository for this doc which includes :
 
-1. the python source for a basic verifier to the siopv2 standard for interaction with a wallet
-2. the python source of a basic issuer for interaction with a wallet
-3. the python source of a desktop “wallet” to interact with a verifier. This wallet is used to test a verifier. 
-4. VC models for the Gaia-X Pass and the LinkedDomain
+1. the python source for a basic verifier to the siopv2 standard for interaction with a wallet (/routes/login)
+2. the python source of a basic issuer for interaction with a wallet (/routes/onboarding)
+3. VC models for the Gaia-X Pass and the LinkedDomain
 
 
 ## Implementation of the Talao wallet for Gaia-X
@@ -69,14 +70,10 @@ An example of this file is available here: xxxxxxx. Be careful to put only publi
 
 ## Collect a Gaia-X Pass type VC
 
+Go to https://talao.co/gaiax and choose "Get a Gaia-X Pass"
+
 
 ## Log in with your Pass
 
+Go to https://talao.co/gaiax and choose "Sign In to the Gaia-x Talao Portal" to simulate an authentication.
 
-## Develop a Verifier
-
-
-## Develop a wallet 
-
-
-## Develop an issuer

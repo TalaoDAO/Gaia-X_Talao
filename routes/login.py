@@ -150,16 +150,16 @@ async def gaiax_login_redirect(id, red) :
         red.publish('gaiax_login', event_data)
         return jsonify("Response malformed"),500
 
-    error = str()
-    error += await test_vp_token(vp_token, nonce)
-    error += await test_id_token(id_token, nonce)
-    if error :    
+    log = str()
+    log += await test_vp_token(vp_token, nonce)
+    log += await test_id_token(id_token, nonce)
+    if log :    
         event_data = json.dumps({"id" : id,
                                 "check" : "ko",
-                                "message" : error
+                                "message" : log
                                 })   
         red.publish('gaiax_login', event_data)
-        return jsonify("ko, signature verification failed !"),500
+        return jsonify("Signature verification failed !"),200
 
     # just to say its fine your are logged in !
     event_data = json.dumps({"id" : id,
@@ -173,26 +173,37 @@ async def test_vp_token(vp_token, nonce) :
     vp = json.loads(vp_token)
     holder = vp['holder']
     vc = vp.get('verifiableCredential')
+    error = str()
     vc_result = await didkit.verify_credential(json.dumps(vc), '{}')
-    log = "VC signature check = " + vc_result + "<br>"
+    if json.loads(vc_result)['errors'] :
+        error += "VP signature check  = " + vc_result + "<br>"
+    else :
+        print("VC signature check = ", vc_result)
     didkit_options = {
             "proofPurpose": "authentication",
             "verificationMethod": "did:web:demo.talao.co#key-1"
     }
     result = await didkit.verify_presentation(vp_token, json.dumps(didkit_options))
-    log += "VP signature check  = " + result + "<br>"
+    if json.loads(result)['errors'] :
+        error += "VP signature check  = " + result + "<br>"
+    else :
+        print("VP signature check = ", result)
+
     VC_type =  json.loads(vp_token)['verifiableCredential']['credentialSubject']['type']
-    log += "VC type = "+ VC_type + "<br>"
+    print("VC type = ", VC_type )
     if json.loads(vp_token)['proof']['challenge'] != nonce :
-        log += "Different nonce/challenge in VC <br>"
+        error += "Different nonce/challenge in VC <br>"
     issuer = json.loads(vp_token)['verifiableCredential']['issuer'] 
-    log += "VC issuer = " + issuer + "<br>"
-    log += "VP holder = " + holder + "<br>"
-    return log
+    print("VC issuer = ", issuer)
+    print("VP holder = ", holder)
+    return error
 
 
 async def test_id_token(id_token, nonce) :
     id_token_kid = jwt.get_unverified_header(id_token)['kid']
+    id_token_unverified = jwt.decode(id_token, options={"verify_signature": False})
+    aud = id_token_unverified.get('aud')
+    print('audience = ', aud)
     id_token_did = id_token_kid.split('#')[0] 
     did_document = json.loads(await didkit.resolve_did(id_token_did, '{}')) #['didDocument']
     # extract public key JWK
@@ -204,14 +215,16 @@ async def test_id_token(id_token, nonce) :
             break
     if not public_key :
         error += "public key not found in DID Document <br>"
+    
+    op_key_pem = jwk.JWK(**json.loads(public_key)).export_to_pem(private_key=False, password=None).decode()
     try :
-        op_key_pem = jwk.JWK(**json.loads(public_key)).export_to_pem(private_key=False, password=None).decode()
-        #id_token = jwt.decode(id_token, op_key_pem, audience="did:web:talao.co", algorithms=["RS256", "ES256", "ES256K", "EdDSA", "PS256"])
-        id_token = jwt.decode(id_token, op_key_pem, algorithms=["RS256", "ES256", "ES256K", "EdDSA", "PS256"])
-
+        id_token = jwt.decode(id_token, op_key_pem, audience=aud, algorithms=["RS256", "ES256", "ES256K", "EdDSA", "PS256"])
     except :
-        error = "error decode Id token or audience issue <br>"
-        return error
+        try :    
+            id_token = jwt.decode(id_token, op_key_pem, algorithms=["RS256", "ES256", "ES256K", "EdDSA", "PS256"])
+        except :
+            error = "error decode Id token or audience issue <br>"
+            return error
     if not id_token.get('iat') :
         error += "iat is missing in id token<br> "
     if not id_token.get('exp') :
