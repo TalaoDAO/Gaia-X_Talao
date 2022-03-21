@@ -3,15 +3,15 @@ import json
 from helpers import send_email
 import uuid
 from datetime import timedelta, datetime
-import logging
-logging.basicConfig(level=logging.INFO)
 import secrets
 from urllib.parse import urlencode
 import didkit
 from jwcrypto import jwk
-
-
+import logging
 from helpers import send_email
+
+logging.basicConfig(level=logging.INFO)
+
 
 OFFER_DELAY = timedelta(seconds= 10*60)
 DID = 'did:web:talao.co'
@@ -23,7 +23,7 @@ keys = json.load(keys_file)
 keys_file.close()
 key = keys['keys']['did:web:talao.co#key-2']
 DID = "did:web:talao.co"
-KID = DID + "#key-2"
+KID = "did:web:talao.co#key-2"
 key1 = jwk.JWK(**key)
 KEY_PEM = key1.export_to_pem(private_key=True, password=None).decode() # private key pem
 KEY = json.dumps(key)
@@ -36,8 +36,7 @@ def init_app(app,red, mode) :
     app.add_url_rule('/gaiax/pass/authentication',  view_func=gaiax_pass_authentication, methods = ['GET', 'POST'])
     app.add_url_rule('/gaiax/pass/stream',  view_func=gaiaxpass_stream, methods = ['GET', 'POST'], defaults={'red' : red})
     app.add_url_rule('/gaiax/pass/end',  view_func=gaiaxpass_end, methods = ['GET', 'POST'])
-    print('init routes onboarding done')
-
+    logging.info('init routes onboarding done')
     return
 
 """
@@ -53,22 +52,20 @@ def gaiax_pass() :
         session['email'] = request.form['email']
         session['code'] = str(secrets.randbelow(99999))
         session['code_exp'] = datetime.now() + timedelta(seconds= 300)
-        print('code time = ', session['code_exp'])
+        logging.info('code time = %s', session['code_exp'])
         try : 
             # get smtp password
             passwords_file = open('passwords.json')
-            print(passwords_file)
             smtp_password = json.load(passwords_file)['smtp_password']
             keys_file.close()
             # send secret code by email 
             send_email.message(session['email'], session['code'], smtp_password)
-            print('secret code sent = ', session['code'])
+            logging.info('secret code sent = %s', session['code'])
             flash("Secret code sent to your email.", 'success')
             session['try_number'] = 1
         except :
             flash("Email failed.", 'danger')
             return render_template('gaiax_pass.html')
-        print("call")
         return redirect ('/gaiax/pass/authentication')
 
 
@@ -78,7 +75,7 @@ def gaiax_pass_authentication() :
     if request.method == 'POST' :
         code = request.form['code']
         session['try_number'] +=1
-        print('code received = ', code)
+        logging.info('code received = %s', code)
         if code in [session['code'], '123456'] and datetime.now().timestamp() < session['code_exp'].timestamp() :
     	    # success exit
             return redirect('/gaiax/pass/qrcode')
@@ -111,10 +108,10 @@ def gaiax_pass_qrcode(red, mode) :
 async def gaiax_pass_offer(id, red):
     """ Endpoint for wallet
     """
-    credential = json.loads(open('./verifiable_credentials/GaiaxPass.jsonld', 'r').read())
+    credential = json.loads(open('./verifiable_credentials/ParticipantCredential.jsonld', 'r').read())
     credential["issuer"] = DID
     credential['id'] = "urn:uuid:talao:test"
-    credential['credentialSubject']['id'] = "did_to_defined"
+    credential['credentialSubject']['id'] = "did:to:be:defined"
     credential['expirationDate'] =  (datetime.now() + timedelta(days= 365)).isoformat() + "Z"
     credential['issuanceDate'] = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
     if request.method == 'GET': 
@@ -134,7 +131,7 @@ async def gaiax_pass_offer(id, red):
         red.delete(id)   
         # sign credential
         credential['id'] = "urn:uuid:" + str(uuid.uuid1())
-        credential['credentialSubject']['id'] = request.form.get('subject_id', 'unknown DID')
+        credential['credentialSubject']['id'] = request.form.get('subject_id', "did:Bearer")
         didkit_options = {
             "proofPurpose": "assertionMethod",
             "verificationMethod": KID,

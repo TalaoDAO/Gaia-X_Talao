@@ -6,7 +6,7 @@
                 "id": "pass_for_gaiax",
                 "input_descriptors": [
                     {
-                        "id": "GaiaxPass issued by Talao",
+                        "id": "ParticipantCredential issued by Talao",
                         "purpose" : "Test for Gaia-X hackathon",
                         "format" : {
                             "ldp_vc": {
@@ -22,17 +22,17 @@
                                     "path": [
                                         "$.credentialSubject.type"
                                     ],
-                                    "purpose" : "One can only accept GaiaxPass",
+                                    "purpose" : "One can only accept ParticipantCredential",
                                     "filter": {
                                         "type": "string",
-                                        "pattern": "GaiaxPass"
+                                        "pattern": "ParticipantCredential"
                                     }
                                 },
                                 {
                                     "path": [
                                         "$.issuer"
                                     ],
-                                    "purpose" : "One can accept only GaiaxPass signed by Talao",
+                                    "purpose" : "One can accept only ParticipantCredential signed by Talao",
                                     "filter": {
                                         "type": "string",
                                         "pattern": "did:web:talao.co"
