@@ -1,4 +1,4 @@
-# Gaia-X - Talao
+# Talao enterprise wallet for Gaia-X
 
 ## The Talao wallet
 
@@ -93,6 +93,7 @@ Example :
 }
 
 ``` 
+
 
 ## Collect a Gaia-X Pass type VC
 
@@ -191,5 +192,46 @@ NB : This one is signed by a did:web identity to a did:tez method. The status is
         "type": "JsonSchemaValidator2018"
     }
 
-    ```
+  ```
+
+## Example of a /.well-known/did.json 
+
+``` json 
+
+            {
+                "@context": [
+                    "https://www.w3.org/ns/did/v1",
+                    {
+                        "@id": "https://w3id.org/security#publicKeyJwk",
+                        "@type": "@json"
+                    }
+                ],
+                "id": "did:web:demo.talao.co",
+                "verificationMethod": [
+                    
+                    {
+                        "id": "did:web:demo.talao.co#key-1",
+                        "type": "JwsVerificationKey2020",
+                        "controller": "did:web:demo.talao.co",
+                        "publicKeyJwk": {
+                            "e":"AQAB",
+                            "kid":"did:web:demo.talao.co#key-1",
+                            "kty":"RSA",
+                            "n": "ilResnUjv6kwJW8yh9u3kS3_2hWYtHD-hN0tBUaSe6UdhGYvmLUxRzyssEs5ib_JjChyhrvFbgWpSmRQK5wQEgGnhxs1isdXXNsEIQY0hKxwR1s5b2WxHsGi65bYMOFr_s2ZkNTpWDnlGNjpvw16Cnp94Ak9GUSHMf1HzQP2C5ou6l6k9Iz4CHpYZCPuM5kaerFDfN-TyQRVnek6vN7rFXbtgaBGzwDVl1aQa75jd5osmMy_43brnQsl2bFwoJLxzzye9V-nBKqZWsMi2V6tB_loYUhBTtxlKyY53R9QoNtJTwx25KMjHIpDCrPoSDXyYV_JfjW9iNGZenNbpoLS6Q"
+                        }
+                    }
+                ],
+                "authentication" : [
+                    "did:web:demo.talao.co#key-1",
+                ],
+                "assertionMethod" : [
+                    "did:web:demo.talao.co#key-1",
+                ],
+                "capabilityInvocation":[
+                    "did:web:demo.talao.co#key-1"
+                ]
+            }
+
+```
+
 
