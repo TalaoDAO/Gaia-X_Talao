@@ -1,6 +1,11 @@
 """
 OP is wallet/holder
 RP is verifier
+
+didkit 0.4.0 
+
+async
+
 """
 
 import json
@@ -91,7 +96,6 @@ def gaiax_login_id(id, red, mode) :
                 "registration" : json.dumps(registration, separators=(',', ':')),
                 "request_uri" : mode.server + "gaiax/login_request_uri/" + id,
     }
-    print('login request = ', login_request)
     
     # Request header for request_uri value
     jwt_header = {
@@ -119,6 +123,7 @@ redirect_uri : Endpoint for OP response
 
 """
 async def gaiax_login_redirect(id, red) :
+    print("redirect call received")
     try : 
         login_request = red.get(id).decode()
         nonce = json.loads(login_request)['nonce']
@@ -201,9 +206,12 @@ async def test_id_token(id_token, nonce) :
         error += "public key not found in DID Document <br>"
     try :
         op_key_pem = jwk.JWK(**json.loads(public_key)).export_to_pem(private_key=False, password=None).decode()
-        id_token = jwt.decode(id_token, op_key_pem, audience="did:web:talao.co", algorithms=["RS256", "ES256", "ES256K", "EdDSA", "PS256"])
+        #id_token = jwt.decode(id_token, op_key_pem, audience="did:web:talao.co", algorithms=["RS256", "ES256", "ES256K", "EdDSA", "PS256"])
+        id_token = jwt.decode(id_token, op_key_pem, algorithms=["RS256", "ES256", "ES256K", "EdDSA", "PS256"])
+
     except :
         error = "error decode Id token or audience issue <br>"
+        return error
     if not id_token.get('iat') :
         error += "iat is missing in id token<br> "
     if not id_token.get('exp') :
