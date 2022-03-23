@@ -1,10 +1,8 @@
 """
-OP is wallet/holder
-RP is verifier
+the wallet is the openID provider
+The verifier is the relaying party
 
-didkit 0.4.0 
-
-async
+didkit 0.4.0 , async
 
 """
 
@@ -12,7 +10,7 @@ import json
 from datetime import timedelta, datetime
 import didkit
 from jwcrypto import jwk
-from flask import Flask, jsonify, request, Response, render_template, redirect, render_template_string
+from flask import jsonify, request, Response, render_template, render_template_string
 from flask_qrcode import QRcode
 from datetime import timedelta, datetime
 import logging
@@ -23,8 +21,6 @@ from jwcrypto import jwk
 import jwt  # pip install pyjwt
 import sys
 
-#app = Flask(__name__)
-#qrcode = QRcode(app)
 
 logging.basicConfig(level=logging.INFO)
 OFFER_DELAY = timedelta(seconds= 10*60)
@@ -43,8 +39,7 @@ KEY_PEM = key1.export_to_pem(private_key=True, password=None).decode() # private
 
 
 def init_app(app,red, mode) :
-    app.add_url_rule('/gaiax/login',  view_func=gaiax_login, methods = ['GET'])
-    app.add_url_rule('/gaiax/login/<id>',  view_func=gaiax_login_id, methods = ['GET', 'POST'], defaults={'red' :red, 'mode' : mode})
+    app.add_url_rule('/gaiax/login',  view_func=gaiax_login, methods = ['GET', 'POST'], defaults={'red' : red, 'mode' : mode})
     app.add_url_rule('/gaiax/login_redirect/<id>',  view_func=gaiax_login_redirect, methods = ['POST'], defaults={'red' :red})
     app.add_url_rule('/gaiax/login_followup',  view_func=login_followup, methods = ['GET', 'POST'], defaults={'red' :red})
     app.add_url_rule('/gaiax/login_stream',  view_func=login_stream, methods = ['GET', 'POST'], defaults={ 'red' : red})
@@ -52,36 +47,24 @@ def init_app(app,red, mode) :
     logging.info('init routes login done')
     return
 
-# request endpoint (request_uri)
+# request_uri endpoint
 def login_request_uri(id, red):
     encoded = red.get(id + "_encoded").decode()
     return jsonify(encoded)
 
-
 # main entry
-def gaiax_login() :
+def gaiax_login(red, mode) :
     id = str(uuid.uuid1())
-    return redirect('/gaiax/login/' + id)
-
-
-# login with dynamic endpoint
-def gaiax_login_id(id, red, mode) :
-    # Request claims
+    # Request claims and registration
     try :
-        claims_file = open('claims.json')
+        claims_file = open('test/claims.json')
         claims = json.load(claims_file)
         claims_file.close()
+        #registration_file = open('test/registration.json')
+        #registration = json.load(registration_file)
+        #registration_file.close()
     except :
-        logging.error("claims file problem")
-        sys.exit()
-
-    # RP registration parameters
-    try :
-        registration_file = open('registration.json')
-        registration = json.load(registration_file)
-        registration_file.close()
-    except :
-        logging.error("registration file problem")
+        logging.error("test file problem")
         sys.exit()
 
     nonce = secrets.token_urlsafe()[0:10]
@@ -93,7 +76,7 @@ def gaiax_login_id(id, red, mode) :
     	        "response_mode" : "post",
     	        "claims" : json.dumps(claims, separators=(',', ':')),
     	        "nonce" : nonce,
-                "registration" : json.dumps(registration, separators=(',', ':')),
+                #"registration" : json.dumps(registration, separators=(',', ':')),
                 "request_uri" : mode.server + "gaiax/login_request_uri/" + id,
     }
     

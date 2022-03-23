@@ -1,6 +1,6 @@
-# Talao enterprise wallet for Gaia-X
+# Talao Enterprise Wallet for Gaia-X
 
-## The Talao wallet
+## The Self Sovereign Identity Talao wallet
 
 This repository presents the use of Talao's SSI wallet for integration into the Gaia-X SSI environment. 
 
@@ -12,7 +12,9 @@ The other specificity of the Talao wallet is to be totally independent of the ec
 
 Talao has retained Spruce's Didkit library for signing and verifying VCs. This library is probably the most complete on the current market with support for a large number of DID methods and signature suites. This library has been tested with the DIF suite tests, it is also available in a large number of development languages ​​Nodejs, Python, C, Rust, PHP, Flutter/Dart, wasm. Other excellent libraries are also available in open source from the DIF in particular those produced by Mattr, DigitalBazar which are references in the SSI community.
 
-## The Talao wallet as an Enterprise wallet for Gaia-X SSI implementation 
+
+
+## The Talao wallet as an enterprise wallet for Gaia-X SSI implementation 
 
 The Gaia-X team has chosen the did:web method as well as the RSA keys for the support of the SSI identity and a predefined list of trusted sources. Currently, only company wallet support is provided, which fully justifies the choice of did:web. The choice of did:web is also an easy-to-implement solution requiring no DLT-type infrastructure while maintaining a Top-Down approach essential to public or semi-public ecosystems.
 
@@ -20,7 +22,7 @@ The VC life cycle has not yet been defined, which technically leaves a number of
 
 Talao's choices are :
 
-* The use of Eidas QWAC certificates as a trusted source. These certificates are simple to obtain and easy to use. They make it possible to secure SSL connections between a server and a client (https protocol).  
+* The use of Eidas QWAC certificates as a trusted source. These certificates are easy to obtain and easy to use. They make it possible to secure SSL connections between a server and a client (https protocol) while keeping a proof of the legal names of the company.
 
 * The implementation of the LinkedDomain standard to establish a chain of trust between the domain name (DNS) of the certificate and the keys used for signing VCs. It avoids the use of specific non-standard signature suites attached to the certificate. This makes key rotation entirely possible, which is not the case with a VC signature directly associated with a certificate.  
 
@@ -28,6 +30,8 @@ Talao's choices are :
 
 * The choice of the JSON-LD standard for the formalization of VC and VP.  
 
+* The use of the PEX protocol (https://identity.foundation/presentation-exchange/) which is a key topic of the SSI protocols. PEX allows the verifier to describes its expectations in  terms of VCs/VPs and consequently it allows the wallet to route the user toward issuers which are able to provide the VCs requested.
+   
 
 ## Repository content
 
@@ -39,19 +43,31 @@ The Didkit repository: library for signing and verifying Verifiable Credentialsn
 
 This repository includes :
 
-1. the python source of a basic verifier to the siopv2 standard for interaction with a wallet (/routes/login)
+1. the python source of a basic verifier to the siopv2 standard for interaction with a wallet (/routes/login) used for authentication
 2. the python source of a basic issuer for interaction with a wallet (/routes/onboarding).
 3. VC models for the Gaia-X Pass and the LinkedDomain
+
+References 
+
+https://www.w3.org/TR/did-core/  
+https://www.w3.org/TR/vc-data-model/  
+https://w3c-ccg.github.io/did-resolution/  
+https://github.com/w3c-ccg/vc-http-api  
+https://w3c-ccg.github.io/citizenship-vocab/  
+https://w3c-ccg.github.io/credential-handler-api/  
 
 
 ## Implementation of a company identity with did:web and a QWAC certificate
 
 Create the did:web identity and initialize a company wallet:
 
-1. Obtain a QWAC type certificate from a Certificate Authority and install this certificate on the company's server. For the tests we will use a standard and free SSL certificate (Let's encrypt,...).  
+1. Obtain a QWAC type certificate from a Certificate Authority and install this certificate on the company's server (for the tests we will use a standard and free SSL certificate from Let's encrypt,...).  
+
 2. For Gaia-X, generate at least one RSA key in JWK format. This key will be used for signing VCs. If you want to use the Talao wallet with other ecosystems, you can generate keys in secp256k&, P-256 or Ed25519 format and install them as well. Do not forget to indicate the value of the “kid” which must be that of the verification method used for the signature of the VCs. An example private key in JWK format is available here.  
+
 3. Create a did.json file which will be installed under the root of the path server (example “my_server.com/.well-known/did.json”). This file is the DID Document of the identity of the company. See reference https://w3c-ccg.github.io/did-method-web/ 
 Be careful to publish only public keys in this document. The Talao wallet supports keys in JWK format (publicKeyJwk).  
+
 4. Add the “LinkedDomains” service in the DID Document (did.json file) :
 
 ``` json
@@ -67,7 +83,9 @@ Be careful to publish only public keys in this document. The Talao wallet suppor
 ```
 
 5. Test with the Universal Resolver https://dev.uniresolver.io/ that the DID Document is correctly installed and written.
+
 6. Create and sign a VC (self signed) that proves that you have the private key that you will use to sign the VCs. An example of this VC is available at: https://identity.foundation/.well-known/resources/did-configuration/#linked-data-proof-format . This file must then be installed on the root with a path '/.well-known/did-configuration.json'
+
 7. Install the Talao wallet on your smartphone andinitialize the wallet by downloading the private key (in JWK format). 
 
 
@@ -94,19 +112,15 @@ Example :
 
 ``` 
 
+## Test
 
-## Collect a Gaia-X Pass type VC
+1. For testing purpose one can use the demo_key.json KEY (/test) file to setup the wallet with did:web:demo.talao.co as the DID of the wallet.
 
-Go to https://talao.co/gaiax and choose "Get a Gaia-X Pass"
+2. Collect a Gaia-X Pass type VC. Go to https://talao.co/gaiax and choose "Get a Gaia-X Pass"
 
+3. Log in with your Pass. Go to https://talao.co/gaiax and choose "Sign In to the Gaia-x Talao Portal" to simulate an authentication.
 
-## Log in with your Pass
-
-Go to https://talao.co/gaiax and choose "Sign In to the Gaia-x Talao Portal" to simulate an authentication.
-
-## Check the content of your VC and VP
-
-Go to https://talao.co/gaiax and choose "Display your credential".
+4. Check the content of your VC and VP. Go to https://talao.co/gaiax and choose "Display your credential".
 
 ## Example of a VC 
 
@@ -217,7 +231,7 @@ NB : This one is signed by a did:web identity to a did:tez method. The status is
                             "e":"AQAB",
                             "kid":"did:web:demo.talao.co#key-1",
                             "kty":"RSA",
-                            "n": "ilResnUjv6kwJW8yh9u3kS3_2hWYtHD-hN0tBUaSe6UdhGYvmLUxRzyssEs5ib_JjChyhrvFbgWpSmRQK5wQEgGnhxs1isdXXNsEIQY0hKxwR1s5b2WxHsGi65bYMOFr_s2ZkNTpWDnlGNjpvw16Cnp94Ak9GUSHMf1HzQP2C5ou6l6k9Iz4CHpYZCPuM5kaerFDfN-TyQRVnek6vN7rFXbtgaBGzwDVl1aQa75jd5osmMy_43brnQsl2bFwoJLxzzye9V-nBKqZWsMi2V6tB_loYUhBTtxlKyY53R9QoNtJTwx25KMjHIpDCrPoSDXyYV_JfjW9iNGZenNbpoLS6Q"
+                            "n": "ilResnUjv6kwJW8y...........BKqZWsMi2V6tB_loYUhBTtxlKyY53R9QoNtJTwx25KMjHIpDCrPoSDXyYV_JfjW9iNGZenNbpoLS6Q"
                         }
                     }
                 ],
@@ -234,4 +248,57 @@ NB : This one is signed by a did:web identity to a did:tez method. The status is
 
 ```
 
+## Claims attribute and Presentation Exchange of the siopv2 verifier (authentication)
 
+
+```json
+
+{
+        "id_token" : {
+        },
+        "vp_token": {
+            "presentation_definition": {
+                "id": "pass_for_gaiax",
+                "input_descriptors": [
+                    {
+                        "id": "ParticipantCredential issued by Talao",
+                        "purpose" : "Test for Gaia-X hackathon",
+                        "format" : {
+                            "ldp_vc": {
+                                "proof_type": [
+                                                "JsonWebSignature2020"
+                                ]
+                            }
+                        },
+                        "constraints": {
+                            "limit_disclosure": "required",
+                            "fields": [
+                                {
+                                    "path": [
+                                        "$.credentialSubject.type"
+                                    ],
+                                    "purpose" : "One can only accept ParticipantCredential",
+                                    "filter": {
+                                        "type": "string",
+                                        "pattern": "ParticipantCredential"
+                                    }
+                                },
+                                {
+                                    "path": [
+                                        "$.issuer"
+                                    ],
+                                    "purpose" : "One can accept only ParticipantCredential signed by Talao",
+                                    "filter": {
+                                        "type": "string",
+                                        "pattern": "did:web:talao.co"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+``` 

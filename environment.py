@@ -1,7 +1,5 @@
 import socket
 
-PORT = 5000
-
 class currentMode() :
 	def __init__(self, myenv):
 		# mychain, myenv --> environment variables set in gunicornconf.py or manually if main.py is launched without Gunicorn
@@ -10,28 +8,23 @@ class currentMode() :
 		self.myenv = myenv
 		self.ipfs_gateway = 'https://talao.mypinata.cloud/ipfs/'
 		self.deeplink = 'https://app.talao.co/'		
-		if self.myenv == 'aws':
-			self.sys_path = '/home/admin'
-		else :
-			self.sys_path = '/home/thierry'
-
-		self.help_path = self.sys_path + '/Talao/templates/'
-		self.uploads_path = self.sys_path + '/Talao/uploads/'
-
+	
 		# En Prod chez AWS 
 		if self.myenv == 'aws':
+			self.sys_path = '/home/admin'
 			self.server = 'https://talao.co/'
 			self.IP = '18.190.21.227' 
-
 		elif self.myenv == 'local' :
-			self.server = 'http://' + extract_ip() + ':' + str(PORT) +'/'
+			self.sys_path = '/home/thierry'
+			self.server = 'http://' + extract_ip() + ':5000/'
 			self.IP = extract_ip()
-			self.port = PORT
-			print('mode.server = ', self.server)
-
+			self.port = 5000
 		else :
 			print('environment variable problem')
 			exit()
+		print('mode server = ', self.server)
+		self.help_path = self.sys_path + '/Talao/templates/'
+		self.uploads_path = self.sys_path + '/Talao/uploads/'
 
 
 def extract_ip():
