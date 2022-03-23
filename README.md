@@ -31,7 +31,7 @@ Talao's choices are :
 * The choice of the JSON-LD standard for the formalization of VC and VP.  
 
 * The use of the PEX protocol (https://identity.foundation/presentation-exchange/) which is a key topic of the SSI protocols. PEX allows the verifier to describes its expectations in  terms of VCs/VPs and consequently it allows the wallet to route the user toward issuers which are able to provide the VCs requested.
-   
+
 
 ## Repository content
 
@@ -43,9 +43,11 @@ The Didkit repository: library for signing and verifying Verifiable Credentialsn
 
 This repository includes :
 
-1. the python source of a basic verifier to the siopv2 standard for interaction with a wallet (/routes/login) used for authentication
-2. the python source of a basic issuer for interaction with a wallet (/routes/onboarding).
-3. VC models for the Gaia-X Pass and the LinkedDomain
+1. the python source of a basic verifier to the siopv2 standard for interaction with a wallet (/routes/login) used for authentication  
+
+2. the python source of a basic issuer for interaction with a wallet (/routes/onboarding).  
+
+3. VC models for the Gaia-X Pass and the LinkedDomain  
 
 References 
 
