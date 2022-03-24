@@ -92,12 +92,14 @@ def gaiax_login(red, mode) :
     # QR code and universal link
     red.set(id, json.dumps(login_request))
     RP_request = urlencode(login_request)
-    universal_link = mode.deeplink + 'app/download?' + urlencode({'uri' : RP_request })
+    url = "openid://?" + RP_request
+    universal_link = mode.deeplink + 'app/download?' + urlencode({'uri' : url })
     return render_template('gaiax_login.html',
-                                url=RP_request,
+                                url=url,
                                 id=id,
                                 encoded=login_request_encoded,
-                                deeplink=universal_link
+                                deeplink=universal_link,
+                                request=RP_request
                                 )
 
 
