@@ -79,7 +79,7 @@ def gaiax_pass_authentication() :
         if code in [session['code'], '123456'] and datetime.now().timestamp() < session['code_exp'].timestamp() :
     	    # success exit
             return redirect('/gaiax/pass/qrcode')
-        elif session['code_exp'] < datetime.now() :
+        elif session['code_exp'].timestamp() < datetime.now().timestamp() :
             flash("Code expired.", 'warning')
             return render_template('gaiax_pass.html')
         elif session['try_number'] > 3 :
@@ -122,7 +122,7 @@ async def gaiax_pass_offer(id, red):
             "expires" : (datetime.now() + OFFER_DELAY).replace(microsecond=0).isoformat(),
             "display" : { "backgroundColor" : "ffffff",
                         "nameFallback" : "Gaia-X Pass by Talao",
-                        "descriptionFallback" : "This Verifiable Credential is used for test purpose. It gives you the possibility to sign-in to the Gaia-X Talao portal."
+                        "descriptionFallback" : "This Verifiable Credential is used for testing purpose."
                         }
         }
         return jsonify(credential_offer)

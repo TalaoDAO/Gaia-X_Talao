@@ -27,6 +27,16 @@
                                         "type": "string",
                                         "pattern": "ParticipantCredential"
                                     }
+                                },
+                                {
+                                    "path": [
+                                        "$.issuer"
+                                    ],
+                                    "purpose" : "One can accept only ParticipantCredential signed by Talao",
+                                    "filter": {
+                                        "type": "string",
+                                        "pattern": "did:web:talao.co"
+                                    }
                                 }
                             ]
                         }

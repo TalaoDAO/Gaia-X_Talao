@@ -16,8 +16,8 @@
                         <h4>This web application is an example of a Gaia-X onboarding process for enterprise wallets.<br>
                              It is based on the up-to-date protocols and signature schemes in respect of the W3C and DIF standards.</h4>
                              <br><br>
-                    1 - Download the Talao smartphone wallet from the  <a href="https://play.google.com/store/apps/details?id=co.talao.wallet&hl=fr_FR">Google</a> or <a href="https://apps.apple.com/fr/app/talao-wallet/id1582183266#?platform=iphone">Apple</a> store <br>
-                    2 - Setup your wallet as an enterprise wallet with the key provided by your company or check the <a href="https://github.com/TalaoDAO/Gaia-X_Talao#test">repository</a> to get our demo key and DID<br>
+                    1 - Download the Talao smartphone wallet from the  <a href="https://play.google.com/store/apps/details?id=co.talao.wallet&hl=fr_FR">Google</a> or <a href="https://apps.apple.com/fr/app/talao-wallet/id1582183266#?platform=iphone">Apple</a> store.<br>
+                    2 - Setup your wallet as an enterprise wallet with the key provided by your company or check the <a href="https://github.com/TalaoDAO/Gaia-X_Talao#test">repository</a> to get our demo key and DID.<br>
                     3 - Start your journey : Get a Gaia-X Pass or go directly to the Sign-In page.
                     </div>
                     <div class="row my-5">
@@ -45,8 +45,12 @@
                             
                         </div>
                     </div>
-                    <div class="row my-5">
-                        
+                    <div class="row my-5 d-block d-sm-none">
+
+                        <div class="col mt-4">
+                            <div id="logo" class="text-center">
+                            </div>
+                        </div>
                       
                        
                        
@@ -63,7 +67,17 @@
     <script src="{{ url_for('static', filename='jquery-3.5.1.slim.min.js') }}"></script>
     <script src="{{ url_for('static', filename='bs-init.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+  <script>
+		var isMobile = /iPhone|iPad/i.test(navigator.userAgent);
+		var element = document.getElementById('logo');
+		if (isMobile) {
+            element.innerHTML = '<a href="https://apps.apple.com/fr/app/talao-wallet/id1582183266#?platform=iphone"><img  src="/static/img/apple-appstore-badge.svg"  style="width: 200px;border-radius:0px;"></a>'
 
+		} else {
+			element.innerHTML = ' <a href="https://play.google.com/store/apps/details?id=co.talao.wallet&hl=fr_FR"><img  src="/static/img/google-play-badge.svg"  style="width: 200px;border-radius:0px;"></a>'
+;
+		}
+	</script>
     <script>
         function goBack() {
           window.history.back();

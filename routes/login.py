@@ -57,7 +57,7 @@ def gaiax_login(red, mode) :
     id = str(uuid.uuid1())
     # Request claims and registration
     try :
-        claims_file = open('test/claims.json')
+        claims_file = open('test/claims2.json')
         claims = json.load(claims_file)
         claims_file.close()
         #registration_file = open('test/registration.json')
@@ -252,6 +252,7 @@ def login_followup(red) :
         <html>
         <body>
             <center>  
+                <br><br>
                 <h1> Talao gaiax login</h1>
                 <h2> Congrats ! </h2>
                 <h2> You are logged in </h2>

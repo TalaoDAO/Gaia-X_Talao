@@ -4,13 +4,13 @@
 
 This repository presents the use of Talao's SSI wallet for integration into the Gaia-X SSI environment. 
 
-Talao is a company specializing in the development of SSI solutions since 2018 and contributing member of several W3V and DIF working groups. Talao is also a wallet provider. The Talao wallet is a smartphone application in production available on the Apple and Google stores, the wallet code is open source.
+Talao is a company specializing in the development of SSI solutions since 2018 and contributing member of several W3C and DIF working groups. Talao is also a wallet provider. The Talao wallet is a smartphone application available on the Apple and Google stores, the wallet code is open source.
 
 The specificity of the Talao SSI wallet is to be compatible with a large number of SSI identity and in particular did:tz, did:web, did:ethr, did:key, did:sol, did:ion, did: pkh and soon did:ebsi. The Talao wallet supports RSA, secp256k1, P-286 and Ed25519 cryptographic keys. These features make the Talao wallet one of the most open solutions on the current SSI smartphone wallet market. 
 
-The other specificity of the Talao wallet is to be totally independent of the ecosystems but interoperable with the greatest number. It is therefore possible with the Talao wallet to collect a Verifiable Credential from one ecosystem to use it in another, which is the very essence of the SSI.
+An other specificity of the Talao wallet is to be totally independent of the ecosystems but interoperable with the greatest number. It is therefore possible with the Talao wallet to collect a Verifiable Credential from one ecosystem to use it in another, which is the very essence of the SSI.
 
-Talao has retained Spruce's Didkit library for signing and verifying VCs. This library is probably the most complete on the current market with support for a large number of DID methods and signature suites. This library has been tested with the DIF suite tests, it is also available in a large number of development languages ​​Nodejs, Python, C, Rust, PHP, Flutter/Dart, wasm. Other excellent libraries are also available in open source from the DIF in particular those produced by Mattr, DigitalBazar which are references in the SSI community.
+Talao has retained Spruce's Didkit library for signing and verifying VCs. This library is probably the most complete on the current market with support for a large number of DID methods and signature suites. This library has been tested with the DIF suite tests, it is also available in a large number of development languages ​​Nodejs, Python, C, Rust, PHP, Flutter/Dart, wasm. Other excellent libraries are also available in open source from the DIF in particular those produced by Mattr, Transmute, DigitalBazar which are references in the SSI community.
 
 
 
@@ -65,7 +65,7 @@ Create the did:web identity and initialize a company wallet:
 
 1. Obtain a QWAC type certificate from a Certificate Authority and install this certificate on the company's server (for the tests we will use a standard and free SSL certificate from Let's encrypt,...).  
 
-2. For Gaia-X, generate at least one RSA key in JWK format. This key will be used for signing VCs. If you want to use the Talao wallet with other ecosystems, you can generate keys in secp256k&, P-256 or Ed25519 format and install them as well. Do not forget to indicate the value of the “kid” which must be that of the verification method used for the signature of the VCs. An example private key in JWK format is available here.  
+2. For Gaia-X, generate at least one RSA key in JWK format. This key will be used for signing VCs. If you want to use the Talao wallet with other ecosystems, you can generate keys in secp256k&, P-256 or Ed25519 format and install them as well. Do not forget to indicate the value of the “kid” which must be that of the verification method used for the signature of the VCs. An example private key in JWK format is available in the /test directory of this repository.  
 
 3. Create a did.json file which will be installed under the root of the path server (example “my_server.com/.well-known/did.json”). This file is the DID Document of the identity of the company. See reference https://w3c-ccg.github.io/did-method-web/ 
 Be careful to publish only public keys in this document. The Talao wallet supports keys in JWK format (publicKeyJwk).  
@@ -74,13 +74,14 @@ Be careful to publish only public keys in this document. The Talao wallet suppor
 
 ``` json
 
-"service": [
-  {
-    "id": "#linkeddomains",
-    "type": "LinkedDomains",
-    "serviceEndpoint": {
-      "origins": [
-        "https://www.contoso.com/"    ]}}}
+   "service": [
+                    {
+                        "id": 'did:web:talao.co#domain-1',
+                        "type" : 'LinkedDomains',
+                        "serviceEndpoint": "https://talao.co"
+                    }
+                ]
+ 
 
 ```
 
