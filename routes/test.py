@@ -9,12 +9,11 @@ didkit 0.4.0 , async
 """
 
 import json
-from datetime import timedelta, datetime
+from datetime import datetime
 import didkit
 from jwcrypto import jwk
 from flask import jsonify, request, Response, render_template, render_template_string
 from flask_qrcode import QRcode
-from datetime import timedelta, datetime
 import logging
 import secrets 
 import uuid
@@ -25,7 +24,6 @@ import sys
 
 
 logging.basicConfig(level=logging.INFO)
-OFFER_DELAY = timedelta(seconds= 10*60)
 
 # key 
 keys_file = open('keys.json')
@@ -41,12 +39,11 @@ KEY_PEM = key1.export_to_pem(private_key=True, password=None).decode() # private
 
 
 def init_app(app,red, mode) :
-    app.add_url_rule('/siopv2/test',  view_func=siopv2_test, methods = ['GET', 'POST'], defaults={'red' : red, 'mode' : mode})
-    app.add_url_rule('/siopv2/test_redirect/<id>',  view_func=siopv2_test_redirect, methods = ['POST'], defaults={'red' :red})
-    app.add_url_rule('/siopv2/test_followup',  view_func=siopv2_followup, methods = ['GET', 'POST'])
-    app.add_url_rule('/siopv2/test_stream',  view_func=siopv2_test_stream, methods = ['GET', 'POST'], defaults={ 'red' : red})
-    app.add_url_rule('/siopv2/test_request_uri/<id>',  view_func=siopv2_request_uri, methods = ['GET', 'POST'], defaults={ 'red' : red})
-    logging.info('init routes siopv2 test done')
+    app.add_url_rule('/gaiax/siopv2/test',  view_func=siopv2_test, methods = ['GET', 'POST'], defaults={'red' : red, 'mode' : mode})
+    app.add_url_rule('/gaiax/siopv2/test_redirect/<id>',  view_func=siopv2_test_redirect, methods = ['POST'], defaults={'red' :red})
+    app.add_url_rule('/gaiax/siopv2/test_followup',  view_func=siopv2_followup, methods = ['GET', 'POST'])
+    app.add_url_rule('/gaiax/siopv2/test_stream',  view_func=siopv2_test_stream, methods = ['GET', 'POST'], defaults={ 'red' : red})
+    app.add_url_rule('/gaiax/siopv2/test_request_uri/<id>',  view_func=siopv2_request_uri, methods = ['GET', 'POST'], defaults={ 'red' : red})
     return
 
 # request_uri endpoint
@@ -75,12 +72,12 @@ def siopv2_test(red, mode) :
                 "scope" : "openid",
                 "response_type" : "id_token",
                 "client_id" : "did:web:talao.co",
-    	        "redirect_uri" : mode.server + "gaiax/login_redirect/" + id,
+    	        "redirect_uri" : mode.server + "gaiax/siopv2/test_redirect/" + id,
     	        "response_mode" : "post",
     	        "claims" : json.dumps(claims, separators=(',', ':')),
     	        "nonce" : nonce,
                 #"registration" : json.dumps(registration, separators=(',', ':')),
-                "request_uri" : mode.server + "siopv2/test_request_uri/" + id,
+                "request_uri" : mode.server + "gaiax/siopv2/test_request_uri/" + id,
     }
     
     # Request header for request_uri value
@@ -124,7 +121,7 @@ async def siopv2_test_redirect(id, red) :
                              "check" : "ko",
                              "message" : request.form.get('error_description', "Unknown")
                              })   
-        red.publish('gaiax_login', event_data)
+        red.publish('pex_test', event_data)
         return jsonify("ko, user has aborted the process !"),500
     
     try :
@@ -135,7 +132,7 @@ async def siopv2_test_redirect(id, red) :
                          "check" : "ko",
                          "message" : "Response malformed"
                          })   
-        red.publish('gaiax_login', event_data)
+        red.publish('pex_test', event_data)
         return jsonify("Response malformed"),500
 
     log = str()
@@ -146,14 +143,14 @@ async def siopv2_test_redirect(id, red) :
                                 "check" : "ko",
                                 "message" : log
                                 })   
-        red.publish('gaiax_login', event_data)
+        red.publish('pex_test', event_data)
         return jsonify("Signature verification failed !"),200
 
     # just to say its fine your are logged in !
     event_data = json.dumps({"id" : id,
                          "check" : "success",
                          })   
-    red.publish('gaiax_login', event_data)
+    red.publish('pex_test', event_data)
     return jsonify("Congrats ! Everything is ok"), 200
 
 
@@ -242,7 +239,7 @@ def siopv2_followup() :
                 <h1> Talao gaiax login</h1>
                 <h2>Here is the log</h2>
                 <h4> {{message|safe}} </h4>
-                 <form   action="/gaiax/login" method="GET">
+                 <form   action="/gaiax/siopv2/test" method="GET">
                 <br><br>
                 <button type="submit">Return</button>
                 </form>
@@ -260,7 +257,7 @@ def siopv2_followup() :
                 <h1> Talao gaiax login</h1>
                 <h2> Congrats ! </h2>
                 <h2> You are logged in </h2>
-                 <form   action="/gaiax/login" method="GET">
+                 <form   action="/gaiax/siopv2/test" method="GET">
                 <br><br>
                 <button type="submit">Return</button>
                 </form>
@@ -274,7 +271,7 @@ def siopv2_followup() :
 def siopv2_test_stream(red):
     def login_event_stream(red):
         pubsub = red.pubsub()
-        pubsub.subscribe('gaiax_login')
+        pubsub.subscribe('pex_test')
         for message in pubsub.listen():
             if message['type']=='message':
                 yield 'data: %s\n\n' % message['data'].decode()

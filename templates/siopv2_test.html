@@ -19,7 +19,7 @@
                                     <center>
                                             <h2>siopv2 PEX test {{claims}} </h2>
 
-                                            <form action="/siopv2/test" method="POST" >
+                                            <form action="/gaiax/siopv2/test" method="POST" >
                   
                                                 <br><br>                   
                         
@@ -73,14 +73,14 @@
     <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
 
     <script>
-        var source = new EventSource('/siopv2/test_stream');
+        var source = new EventSource('/gaiax/siopv2/test_stream');
         source.onmessage = function (event) {
             const result = JSON.parse(event.data);
             if (result.check == 'success' & result.id == '{{id}}'){
-                window.location.href="/siopv2/test_followup?id=" + '{{id}}';
+                window.location.href="/gaiax/siopv2/test_followup?id=" + '{{id}}';
             }            
             if (result.check == 'ko' & result.id == '{{id}}'){
-                window.location.href="/siopv2/test_followup?id=" + "{{id}}" + "&message=" + result.message ;
+                window.location.href="/gaiax/siopv2/test_followup?id=" + "{{id}}" + "&message=" + result.message ;
             }
         };
  

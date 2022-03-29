@@ -14,7 +14,6 @@ import didkit
 from jwcrypto import jwk
 from flask import jsonify, request, Response, render_template, render_template_string
 from flask_qrcode import QRcode
-from datetime import timedelta, datetime
 import logging
 import secrets 
 import uuid
