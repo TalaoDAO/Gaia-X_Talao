@@ -7,10 +7,11 @@ from flask_qrcode import QRcode
 import didkit
 import redis
 import os
-import time
+import sys
+print("python version : ", sys.version)
 
 # local dependencies
-from routes import login, onboarding
+from routes import login, onboarding, test
 import environment
 
 # init
@@ -20,7 +21,7 @@ if not myenv :
 mode = environment.currentMode(myenv)
 app = Flask(__name__)
 qrcode = QRcode(app)
-app.jinja_env.globals['Version'] = "0.6.1"
+app.jinja_env.globals['Version'] = "0.7.0"
 app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_COOKIE_NAME'] = 'talao'
 app.config['SESSION_TYPE'] = 'redis' # Redis server side session
@@ -32,6 +33,7 @@ red= redis.Redis(host='localhost', port=6379, db=0)
 
 # init routes 
 login.init_app(app, red, mode)
+test.init_app(app, red, mode)
 onboarding.init_app(app, red, mode)
 
 print("didkit version = ", didkit.get_version())

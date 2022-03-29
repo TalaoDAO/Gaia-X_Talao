@@ -1,47 +1,41 @@
 {
-        "id_token" : {
-        },
-        "vp_token": {
-            "presentation_definition": {
-                "id": "pass_for_gaiax",
-                "input_descriptors": [
-                    {
-                        "id": "ParticipantCredential issued by Talao",
-                        "purpose" : "Test for Gaia-X hackathon",
-                        "format" : {
-                            "ldp_vc": {
-                                "proof_type": [
-                                                "JsonWebSignature2020"
-                                ]
-                            }
-                        },
-                        "constraints": {
-                            "limit_disclosure": "required",
-                            "fields": [
-                                {
-                                    "path": [
-                                        "$.credentialSubject.type"
-                                    ],
-                                    "purpose" : "One can only accept ParticipantCredential",
-                                    "filter": {
-                                        "type": "string",
-                                        "pattern": "ParticipantCredential"
-                                    }
-                                },
-                                {
-                                    "path": [
-                                        "$.issuer"
-                                    ],
-                                    "purpose" : "One can accept only ParticipantCredential signed by Talao",
-                                    "filter": {
-                                        "type": "string",
-                                        "pattern": "did:web:talao.co"
-                                    }
+    "id_token" : {
+    },
+    "vp_token": {
+        "presentation_definition": {
+            "id": "pass_for_gaiax",
+            "input_descriptors": [
+                {
+                    "id": "ParticipantCredential issued by Talao",
+                    "purpose" : "Test for Gaia-X hackathon",
+                    
+                    "constraints": {
+                        "limit_disclosure": "required",
+                        "fields": [
+                            {
+                                "path": [
+                                    "$.credentialSubject.type"
+                                ],
+                                "purpose" : "One can only accept ParticipantCredential",
+                                "filter": {
+                                    "type": "string",
+                                    "pattern": "ParticipantCredential"
                                 }
-                            ]
-                        }
+                            },
+                            {
+                                "path": [
+                                    "$.issuer"
+                                ],
+                                "purpose" : "One can accept only ParticipantCredential signed by Talao",
+                                "filter": {
+                                    "type": "string",
+                                    "pattern": "did:web:talao.co"
+                                }
+                            }
+                        ]
                     }
-                ]
-            }
+                }
+            ]
         }
     }
+}

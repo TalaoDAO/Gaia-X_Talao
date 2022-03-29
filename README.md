@@ -76,8 +76,8 @@ Be careful to publish only public keys in this document. The Talao wallet suppor
 
    "service": [
                     {
-                        "id": 'did:web:talao.co#domain-1',
-                        "type" : 'LinkedDomains',
+                        "id": "did:web:talao.co#domain-1",
+                        "type" : "LinkedDomains",
                         "serviceEndpoint": "https://talao.co"
                     }
                 ]

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!-- gaiax_login.html -->
+<html>
+
+<head>
+    {% include 'head.html' %}
+
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                       {% include 'test_nav_bar.html' %}
+
+                        <div id="content_desktop"  class="container mt-5 d-none d-sm-block" >
+                            <div class="row  justify-content-center ">
+                                <div class="m-3">
+                                    <center>
+                                            <h2>siopv2 PEX test {{claims}} </h2>
+
+                                            <form action="/siopv2/test" method="POST" >
+                  
+                                                <br><br>                   
+                        
+                                                <button name="claims" type="submit" value="claims1">Claims 1</button>
+                                                <button name="claims" type="submit" value="claims2">Claims 2</button>
+                                                <button name="claims" type="submit" value="claims3">Claims 3</button>
+                                                <button name="claims" type="submit" value="claims4">Claims 4</button>
+                                                <button name="claims" type="submit" value="claims5">Claims 5</button>
+                                               
+                                            </form>
+                                            <br>
+
+                                            <h4>Scan the QR Code bellow with your Talao SSI wallet or copy the request to your desktop wallet.</h4> 
+                                            <div class="my-4">
+                                                <img src="{{ qrcode(url)}}"  width="300" >
+                                            </div>
+                                            <div class="my-2">
+                                                Request
+                                            </div>
+                                            <textarea cols="100" rows="20">{{request}}</textarea>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+
+
+    <div id="content_smartphone" class="d-block d-sm-none">
+        <div class="card shadow o-hidden border-0 m-3">
+          <img src="/static/img/12.png" class="card-img-top">
+          <div class="card-body">
+              <div class="text-center">
+                  <p class="card-text">
+                    <br>Siopv2 test PEX<br>
+                  </p>
+                  <a href="{{deeplink}}" class="btn btn-primary">Sign-In</a>
+              </div>
+          </div>
+      </div> 
+    </div>
+
+
+</div>
+</div>
+</div>
+
+{% include 'footer.html' %}
+
+
+    <script src="{{ url_for('static', filename='jquery-3.5.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bs-init.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+    <script>
+        var source = new EventSource('/siopv2/test_stream');
+        source.onmessage = function (event) {
+            const result = JSON.parse(event.data);
+            if (result.check == 'success' & result.id == '{{id}}'){
+                window.location.href="/siopv2/test_followup?id=" + '{{id}}';
+            }            
+            if (result.check == 'ko' & result.id == '{{id}}'){
+                window.location.href="/siopv2/test_followup?id=" + "{{id}}" + "&message=" + result.message ;
+            }
+        };
+ 
+    </script>
+    
+</body>
+</html>

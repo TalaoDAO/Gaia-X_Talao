@@ -41,30 +41,31 @@ KEY_PEM = key1.export_to_pem(private_key=True, password=None).decode() # private
 
 
 def init_app(app,red, mode) :
-    app.add_url_rule('/gaiax/login',  view_func=gaiax_login, methods = ['GET', 'POST'], defaults={'red' : red, 'mode' : mode})
-    app.add_url_rule('/gaiax/login_redirect/<id>',  view_func=gaiax_login_redirect, methods = ['POST'], defaults={'red' :red})
-    app.add_url_rule('/gaiax/login_followup',  view_func=login_followup, methods = ['GET', 'POST'], defaults={'red' :red})
-    app.add_url_rule('/gaiax/login_stream',  view_func=login_stream, methods = ['GET', 'POST'], defaults={ 'red' : red})
-    app.add_url_rule('/gaiax/login_request_uri/<id>',  view_func=login_request_uri, methods = ['GET', 'POST'], defaults={ 'red' : red})
-    logging.info('init routes login done')
+    app.add_url_rule('/siopv2/test',  view_func=siopv2_test, methods = ['GET', 'POST'], defaults={'red' : red, 'mode' : mode})
+    app.add_url_rule('/siopv2/test_redirect/<id>',  view_func=siopv2_test_redirect, methods = ['POST'], defaults={'red' :red})
+    app.add_url_rule('/siopv2/test_followup',  view_func=siopv2_followup, methods = ['GET', 'POST'])
+    app.add_url_rule('/siopv2/test_stream',  view_func=siopv2_test_stream, methods = ['GET', 'POST'], defaults={ 'red' : red})
+    app.add_url_rule('/siopv2/test_request_uri/<id>',  view_func=siopv2_request_uri, methods = ['GET', 'POST'], defaults={ 'red' : red})
+    logging.info('init routes siopv2 test done')
     return
 
 # request_uri endpoint
-def login_request_uri(id, red):
-    encoded = red.get(id + "_encoded").decode()
-    return jsonify(encoded)
+def siopv2_request_uri(id, red):
+    encoded_request = red.get(id + "_encoded").decode()
+    return jsonify(encoded_request)
 
 # main entry
-def gaiax_login(red, mode) :
+def siopv2_test(red, mode) :
+    if not request.form.get('claims') :
+        claims_id = "claims2" 
+    else :
+        claims_id = request.form['claims']
     id = str(uuid.uuid1())
     # Request claims and registration
     try :
-        claims_file = open('test/claims2.json')
+        claims_file = open('test/' + claims_id + '.json')
         claims = json.load(claims_file)
         claims_file.close()
-        #registration_file = open('test/registration.json')
-        #registration = json.load(registration_file)
-        #registration_file.close()
     except :
         logging.error("test file problem")
         sys.exit()
@@ -79,7 +80,7 @@ def gaiax_login(red, mode) :
     	        "claims" : json.dumps(claims, separators=(',', ':')),
     	        "nonce" : nonce,
                 #"registration" : json.dumps(registration, separators=(',', ':')),
-                "request_uri" : mode.server + "gaiax/login_request_uri/" + id,
+                "request_uri" : mode.server + "siopv2/test_request_uri/" + id,
     }
     
     # Request header for request_uri value
@@ -94,14 +95,15 @@ def gaiax_login(red, mode) :
     # QR code and universal link display
     red.set(id, json.dumps(login_request))
     RP_request = urlencode(login_request) # for desktop wallet
-    url = "openid://?" + RP_request # for QR code 
-    universal_link = mode.deeplink + 'app/download?' + urlencode({'uri' : url }) # universal link
-    return render_template('gaiax_login.html',
+    url = "https://app.talao.co/authorization_endpoint?" + RP_request # for QR code 
+    universal_link = url
+    return render_template('siopv2_test.html',
                                 url=url,
                                 id=id,
                                 encoded=login_request_encoded,
                                 deeplink=universal_link,
-                                request=RP_request
+                                request=RP_request,
+                                claims=claims_id
                                 )
 
 
@@ -109,7 +111,7 @@ def gaiax_login(red, mode) :
 redirect_uri : Endpoint for OP response
 
 """
-async def gaiax_login_redirect(id, red) :
+async def siopv2_test_redirect(id, red) :
     try : 
         login_request = red.get(id).decode()
         nonce = json.loads(login_request)['nonce']
@@ -231,7 +233,7 @@ async def test_id_token(id_token, nonce) :
 
 
 # This is to get a feedback from the wallet and display id_token and vp_token
-def login_followup(red) :
+def siopv2_followup() :
     if request.args.get('message') :
         html_string = """  <!DOCTYPE html>
             <html>
@@ -269,7 +271,7 @@ def login_followup(red) :
 
 
 # Event stream to manage the front end page
-def login_stream(red):
+def siopv2_test_stream(red):
     def login_event_stream(red):
         pubsub = red.pubsub()
         pubsub.subscribe('gaiax_login')
