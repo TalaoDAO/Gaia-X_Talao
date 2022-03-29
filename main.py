@@ -20,7 +20,7 @@ if not myenv :
 mode = environment.currentMode(myenv)
 app = Flask(__name__)
 qrcode = QRcode(app)
-app.jinja_env.globals['Version'] = "0.6"
+app.jinja_env.globals['Version'] = "0.6.1"
 app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_COOKIE_NAME'] = 'talao'
 app.config['SESSION_TYPE'] = 'redis' # Redis server side session
